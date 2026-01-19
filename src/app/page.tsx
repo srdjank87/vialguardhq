@@ -834,8 +834,8 @@ function PricingSection() {
                   href="/signup"
                   className={`btn btn-block ${
                     plan.popular
-                      ? "btn-secondary"
-                      : "btn-outline border-2 border-secondary text-secondary hover:bg-secondary hover:text-white"
+                      ? "btn-gradient"
+                      : "btn-outline border-2 border-[#7C3AED] text-[#7C3AED] hover:bg-[#7C3AED] hover:text-white hover:border-[#7C3AED]"
                   }`}
                 >
                   {plan.cta}
