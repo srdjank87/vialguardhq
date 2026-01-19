@@ -102,7 +102,7 @@ function Header() {
           >
             Sign In
           </Link>
-          <Link href="/signup" className="btn btn-secondary btn-sm">
+          <Link href="/signup" className="btn btn-gradient btn-sm">
             Start Free Trial
           </Link>
         </div>
