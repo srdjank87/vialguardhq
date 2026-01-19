@@ -125,9 +125,9 @@ function HeroSection() {
           </div>
 
           {/* Headline */}
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 leading-snug mb-6">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight mb-6">
             Stop Losing Money on
-            <span className="text-primary block">
+            <span className="text-primary block leading-tight">
               Injectable Inventory
             </span>
           </h1>
