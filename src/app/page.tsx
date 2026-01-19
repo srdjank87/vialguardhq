@@ -17,7 +17,6 @@ import {
   Lock,
   Zap,
   Package,
-  ClipboardCheck,
   BadgeCheck,
   ShieldCheck,
   Stethoscope,
@@ -115,17 +114,17 @@ function Header() {
 
 function HeroSection() {
   return (
-    <section className="bg-gradient-to-br from-teal-50 via-cyan-50 to-white py-12 sm:py-16 lg:py-20">
+    <section className="bg-gradient-to-br from-teal-50 via-cyan-50 to-white py-8 sm:py-16 lg:py-20">
       <div className="max-w-6xl mx-auto px-4">
         <div className="text-center max-w-4xl mx-auto">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-teal-100 text-teal-800 px-4 py-1.5 rounded-full text-sm font-medium mb-6">
+          <div className="inline-flex items-center gap-2 bg-teal-100 text-teal-800 px-4 py-1.5 rounded-full text-sm font-medium mb-4 sm:mb-6">
             <Shield className="h-4 w-4" />
             Built specifically for injectable clinics
           </div>
 
           {/* Headline */}
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight mb-6">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight mb-4 sm:mb-6">
             Stop Losing Money on
             <span className="text-primary block leading-tight">
               Injectable Inventory
@@ -133,15 +132,15 @@ function HeroSection() {
           </h1>
 
           {/* Subheadline */}
-          <p className="text-lg sm:text-xl text-gray-600 leading-relaxed mb-8 max-w-2xl mx-auto">
+          <p className="text-base sm:text-xl text-gray-600 leading-relaxed mb-4 sm:mb-8 max-w-2xl mx-auto">
             VialGuardHQ is the specialized inventory guardian for medical spas
             and aesthetic clinics. Track every vial of Botox and filler, catch
             discrepancies before they cost you, and stay audit-ready without the
             spreadsheet chaos.
           </p>
 
-          {/* Value Props */}
-          <div className="flex flex-wrap gap-3 sm:gap-6 justify-center text-sm text-gray-600 mb-8">
+          {/* Value Props - Hidden on mobile */}
+          <div className="hidden sm:flex flex-wrap gap-3 sm:gap-6 justify-center text-sm text-gray-600 mb-8">
             <span className="flex items-center gap-1.5">
               <CheckCircle2 className="h-4 w-4 text-emerald-600 flex-shrink-0" />
               Vial-level tracking
@@ -161,17 +160,17 @@ function HeroSection() {
           </div>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-4 sm:mb-6">
             <Link
               href="/signup"
-              className="btn btn-gradient btn-lg text-lg px-8"
+              className="btn btn-gradient btn-md sm:btn-lg text-base sm:text-lg px-6 sm:px-8"
             >
               Start 14-Day Free Trial
               <ChevronRight className="h-5 w-5" />
             </Link>
             <Link
               href="#how-it-works"
-              className="btn btn-outline btn-lg text-lg px-8 border-2 border-primary text-primary hover:bg-primary hover:text-white"
+              className="btn btn-outline btn-md sm:btn-lg text-base sm:text-lg px-6 sm:px-8 border-2 border-primary text-primary hover:bg-primary hover:text-white"
             >
               See How It Works
             </Link>
@@ -183,8 +182,8 @@ function HeroSection() {
           </p>
         </div>
 
-        {/* Hero Image Placeholder */}
-        <div className="mt-12 max-w-4xl mx-auto">
+        {/* Hero Image Placeholder - Hidden on mobile */}
+        <div className="hidden sm:block mt-12 max-w-4xl mx-auto">
           <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
             <div className="bg-gray-100 px-4 py-3 border-b border-gray-200 flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-red-400"></div>
@@ -298,21 +297,18 @@ function HowItWorksSection() {
       title: "Receive & Register",
       description:
         "Scan or enter new inventory when it arrives. Capture lot numbers, expiry dates, and quantities in seconds.",
-      icon: Package,
     },
     {
       number: "2",
       title: "Log Usage",
       description:
         "One-tap logging at point of care. Record which vial, how much, which provider. Faster than your current process.",
-      icon: ClipboardCheck,
     },
     {
       number: "3",
       title: "Stay Protected",
       description:
         "VialGuardHQ quietly monitors for discrepancies, expiries, and anomalies. Get alerts before problems become crises.",
-      icon: Shield,
     },
   ];
 
@@ -336,11 +332,8 @@ function HowItWorksSection() {
           {steps.map((step, index) => (
             <div key={index} className="relative">
               <div className="bg-white rounded-2xl p-8 shadow-lg h-full">
-                <div className="w-12 h-12 bg-primary text-white rounded-xl flex items-center justify-center text-xl font-bold mb-6">
+                <div className="w-12 h-12 bg-primary text-white rounded-xl flex items-center justify-center text-xl font-bold mb-4">
                   {step.number}
-                </div>
-                <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mb-4">
-                  <step.icon className="h-7 w-7 text-primary" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">
                   {step.title}
