@@ -1,0 +1,345 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ==================== ACCOUNTS & AUTH ====================
+
+model Account {
+  id                   String             @id @default(cuid())
+  clinicName           String
+  plan                 Plan               @default(TRIAL)
+  subscriptionStatus   SubscriptionStatus @default(TRIAL)
+  stripeCustomerId     String?            @unique
+  stripeSubscriptionId String?
+  currentPeriodEnd     DateTime?
+  billingCycle         BillingCycle       @default(MONTHLY)
+  trialEndsAt          DateTime?
+  timezone             String             @default("America/New_York")
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  users         User[]
+  products      Product[]
+  vials         Vial[]
+  usageLogs     UsageLog[]
+  discrepancies Discrepancy[]
+  auditLogs     AuditLog[]
+  providers     Provider[]
+  locations     Location[]
+
+  @@index([stripeCustomerId])
+}
+
+model User {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  passwordHash      String
+  name              String
+  role              UserRole  @default(STAFF)
+  emailVerified     Boolean   @default(false)
+  verificationToken String?
+  resetToken        String?
+  resetTokenExpiry  DateTime?
+  accountId         String
+  account           Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  usageLogs   UsageLog[]
+  adjustments InventoryAdjustment[]
+  auditLogs   AuditLog[]
+
+  @@index([accountId])
+  @@index([email])
+}
+
+enum UserRole {
+  OWNER
+  ADMIN
+  PROVIDER
+  STAFF
+}
+
+enum Plan {
+  TRIAL
+  STARTER
+  GROWTH
+  PRO
+}
+
+enum SubscriptionStatus {
+  TRIAL
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  INCOMPLETE
+  EXPIRED
+}
+
+enum BillingCycle {
+  MONTHLY
+  YEARLY
+}
+
+// ==================== CLINIC STRUCTURE ====================
+
+model Provider {
+  id        String   @id @default(cuid())
+  name      String
+  initials  String
+  email     String?
+  active    Boolean  @default(true)
+  accountId String
+  account   Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  usageLogs UsageLog[]
+
+  @@index([accountId])
+}
+
+model Location {
+  id        String       @id @default(cuid())
+  name      String
+  type      LocationType @default(STORAGE)
+  accountId String
+  account   Account      @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  vials Vial[]
+
+  @@index([accountId])
+}
+
+enum LocationType {
+  STORAGE
+  TREATMENT_ROOM
+}
+
+// ==================== PRODUCTS & INVENTORY ====================
+
+model Product {
+  id           String          @id @default(cuid())
+  name         String
+  brand        String
+  category     ProductCategory
+  unitType     UnitType
+  unitsPerVial Decimal
+  costPerVial  Decimal?
+  active       Boolean         @default(true)
+  accountId    String
+  account      Account         @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  vials Vial[]
+
+  @@unique([accountId, name])
+  @@index([accountId])
+}
+
+enum ProductCategory {
+  NEUROTOXIN
+  FILLER
+  BIOSTIMULATOR
+  OTHER
+}
+
+enum UnitType {
+  UNITS
+  ML
+  SYRINGE
+  VIAL
+}
+
+model Vial {
+  id                String     @id @default(cuid())
+  productId         String
+  product           Product    @relation(fields: [productId], references: [id])
+  lotNumber         String
+  expirationDate    DateTime
+  initialQuantity   Decimal
+  remainingQuantity Decimal
+  status            VialStatus @default(ACTIVE)
+  locationId        String?
+  location          Location?  @relation(fields: [locationId], references: [id])
+  receivedDate      DateTime   @default(now())
+  openedDate        DateTime?
+  depletedDate      DateTime?
+  notes             String?
+  accountId         String
+  account           Account    @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  usageLogs   UsageLog[]
+  adjustments InventoryAdjustment[]
+
+  @@index([accountId])
+  @@index([productId])
+  @@index([lotNumber])
+  @@index([expirationDate])
+  @@index([status])
+}
+
+enum VialStatus {
+  ACTIVE
+  DEPLETED
+  EXPIRED
+  DISPOSED
+  QUARANTINED
+}
+
+// ==================== USAGE LOGGING ====================
+
+model UsageLog {
+  id               String    @id @default(cuid())
+  vialId           String
+  vial             Vial      @relation(fields: [vialId], references: [id])
+  providerId       String?
+  provider         Provider? @relation(fields: [providerId], references: [id])
+  quantityUsed     Decimal
+  patientReference String?
+  treatmentArea    String?
+  usedAt           DateTime  @default(now())
+  loggedAt         DateTime  @default(now())
+  loggedById       String
+  loggedBy         User      @relation(fields: [loggedById], references: [id])
+  notes            String?
+  accountId        String
+  account          Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  createdAt        DateTime  @default(now())
+
+  @@index([accountId])
+  @@index([vialId])
+  @@index([providerId])
+  @@index([usedAt])
+}
+
+// ==================== ADJUSTMENTS & DISCREPANCIES ====================
+
+model InventoryAdjustment {
+  id               String           @id @default(cuid())
+  vialId           String
+  vial             Vial             @relation(fields: [vialId], references: [id])
+  previousQuantity Decimal
+  newQuantity      Decimal
+  reason           AdjustmentReason
+  notes            String?
+  adjustedById     String
+  adjustedBy       User             @relation(fields: [adjustedById], references: [id])
+  createdAt        DateTime         @default(now())
+
+  @@index([vialId])
+}
+
+enum AdjustmentReason {
+  PHYSICAL_COUNT
+  SPILLAGE
+  EXPIRED_DISPOSAL
+  BREAKAGE
+  THEFT_SUSPECTED
+  DATA_CORRECTION
+  OTHER
+}
+
+model Discrepancy {
+  id            String              @id @default(cuid())
+  type          DiscrepancyType
+  severity      DiscrepancySeverity
+  description   String
+  expectedValue String?
+  actualValue   String?
+  vialId        String?
+  productId     String?
+  status        DiscrepancyStatus   @default(OPEN)
+  resolvedAt    DateTime?
+  resolution    String?
+  accountId     String
+  account       Account             @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  @@index([accountId])
+  @@index([status])
+}
+
+enum DiscrepancyType {
+  QUANTITY_MISMATCH
+  MISSING_VIAL
+  UNEXPECTED_DEPLETION
+  EXPIRY_VIOLATION
+  LOT_MISMATCH
+  UNDOCUMENTED_USAGE
+}
+
+enum DiscrepancySeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum DiscrepancyStatus {
+  OPEN
+  INVESTIGATING
+  RESOLVED
+  DISMISSED
+}
+
+// ==================== AUDIT TRAIL ====================
+
+model AuditLog {
+  id          String      @id @default(cuid())
+  action      AuditAction
+  entityType  String
+  entityId    String?
+  actorType   ActorType
+  userId      String?
+  user        User?       @relation(fields: [userId], references: [id])
+  description String
+  metadata    Json?
+  ipAddress   String?
+  userAgent   String?
+  accountId   String
+  account     Account     @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  createdAt   DateTime    @default(now())
+
+  @@index([accountId])
+  @@index([entityType, entityId])
+  @@index([action])
+  @@index([createdAt])
+}
+
+enum AuditAction {
+  VIAL_RECEIVED
+  VIAL_OPENED
+  VIAL_DEPLETED
+  VIAL_DISPOSED
+  VIAL_QUARANTINED
+  USAGE_LOGGED
+  USAGE_EDITED
+  USAGE_DELETED
+  ADJUSTMENT_MADE
+  DISCREPANCY_CREATED
+  DISCREPANCY_RESOLVED
+  USER_CREATED
+  USER_UPDATED
+  USER_DELETED
+  SETTINGS_CHANGED
+  LOGIN
+  LOGOUT
+  PASSWORD_RESET
+}
+
+enum ActorType {
+  USER
+  SYSTEM
+  WEBHOOK
+}
