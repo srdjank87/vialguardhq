@@ -125,7 +125,7 @@ function HeroSection() {
           {/* Headline */}
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight mb-4 sm:mb-6">
             Stop Losing Money on
-            <span className="text-secondary block leading-tight">
+            <span className="text-primary block leading-tight">
               Injectable Inventory
             </span>
           </h1>
@@ -141,19 +141,19 @@ function HeroSection() {
           {/* Value Props - Hidden on mobile */}
           <div className="hidden sm:flex flex-wrap gap-3 sm:gap-6 justify-center text-sm text-gray-600 mb-8">
             <span className="flex items-center gap-1.5">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600 flex-shrink-0" />
+              <CheckCircle2 className="h-4 w-4 text-emerald-500 flex-shrink-0" />
               Vial-level tracking
             </span>
             <span className="flex items-center gap-1.5">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600 flex-shrink-0" />
+              <CheckCircle2 className="h-4 w-4 text-emerald-500 flex-shrink-0" />
               Expiry protection
             </span>
             <span className="flex items-center gap-1.5">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600 flex-shrink-0" />
+              <CheckCircle2 className="h-4 w-4 text-emerald-500 flex-shrink-0" />
               Audit-ready logs
             </span>
             <span className="flex items-center gap-1.5">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600 flex-shrink-0" />
+              <CheckCircle2 className="h-4 w-4 text-emerald-500 flex-shrink-0" />
               No EMR replacement
             </span>
           </div>
@@ -490,7 +490,7 @@ function ProtectionSystemsSection() {
     emerald: {
       bg: "bg-emerald-50",
       border: "border-emerald-200",
-      icon: "text-emerald-600",
+      icon: "text-emerald-500",
     },
   };
 
@@ -825,7 +825,7 @@ function PricingSection() {
                 <ul className="space-y-3 mb-6 flex-grow">
                   {plan.features.map((feature, fIndex) => (
                     <li key={fIndex} className="flex gap-2 items-start">
-                      <CheckCircle2 className="h-5 w-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                      <CheckCircle2 className="h-5 w-5 text-emerald-500 flex-shrink-0 mt-0.5" />
                       <span className="text-sm">{feature}</span>
                     </li>
                   ))}
@@ -834,8 +834,8 @@ function PricingSection() {
                   href="/signup"
                   className={`btn btn-block ${
                     plan.popular
-                      ? "btn-primary"
-                      : "btn-outline border-2 border-primary text-primary hover:bg-primary hover:text-white"
+                      ? "btn-secondary"
+                      : "btn-outline border-2 border-secondary text-secondary hover:bg-secondary hover:text-white"
                   }`}
                 >
                   {plan.cta}
