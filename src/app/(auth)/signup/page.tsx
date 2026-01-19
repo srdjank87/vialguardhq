@@ -98,8 +98,8 @@ export default function SignUpPage() {
   const trialBenefits = [
     "14-day free trial",
     "Full access to all features",
-    "No credit card required",
-    "Cancel anytime",
+    "Cancel before trial ends, pay nothing",
+    "Setup in under 5 minutes",
   ];
 
   return (
