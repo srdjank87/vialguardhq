@@ -2,19 +2,29 @@
 @plugin "daisyui";
 
 @theme {
-  --color-primary: #0F766E;
-  --color-primary-focus: #0D9488;
+  /* Brand Primary - Authority Blue (trust, compliance, audit-safe) */
+  --color-primary: #1E40AF;
+  --color-primary-focus: #1D4ED8;
   --color-primary-content: #ffffff;
-  --color-secondary: #6366F1;
+
+  /* Brand Accent - Purple (CTAs, modern SaaS polish) */
+  --color-secondary: #7C3AED;
+  --color-secondary-focus: #8B5CF6;
   --color-secondary-content: #ffffff;
-  --color-accent: #14B8A6;
+
+  /* Keep accent for compatibility */
+  --color-accent: #7C3AED;
   --color-accent-content: #ffffff;
+
+  /* Neutrals */
   --color-neutral: #1E293B;
   --color-neutral-content: #ffffff;
   --color-base-100: #ffffff;
   --color-base-200: #F8FAFC;
   --color-base-300: #E2E8F0;
   --color-base-content: #1E293B;
+
+  /* Status colors */
   --color-info: #3B82F6;
   --color-info-content: #ffffff;
   --color-success: #22C55E;
@@ -23,6 +33,12 @@
   --color-warning-content: #ffffff;
   --color-error: #EF4444;
   --color-error-content: #ffffff;
+
+  /* Custom brand tokens */
+  --brand-blue: #1E40AF;
+  --brand-blue-light: #3B82F6;
+  --brand-purple: #7C3AED;
+  --brand-purple-light: #8B5CF6;
 }
 
 html,
@@ -30,12 +46,13 @@ body {
   scroll-behavior: smooth !important;
 }
 
+/* Purple gradient for CTAs */
 .btn-gradient {
   background-image: linear-gradient(
     135deg,
-    #0f766e 0%,
-    #14b8a6 50%,
-    #0d9488 100%
+    #7C3AED 0%,
+    #8B5CF6 50%,
+    #A78BFA 100%
   );
   background-size: 200% 200%;
   color: white;
@@ -49,4 +66,21 @@ body {
 
 .btn {
   text-transform: none;
+}
+
+/* Utility classes for brand colors */
+.text-brand-blue {
+  color: var(--brand-blue);
+}
+
+.bg-brand-blue {
+  background-color: var(--brand-blue);
+}
+
+.text-brand-purple {
+  color: var(--brand-purple);
+}
+
+.bg-brand-purple {
+  background-color: var(--brand-purple);
 }

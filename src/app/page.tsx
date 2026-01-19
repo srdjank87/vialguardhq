@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import {
   Shield,
   Clock,
@@ -69,9 +70,7 @@ function Header() {
     <header className="border-b border-base-300 bg-base-100 sticky top-0 z-50">
       <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
         <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-            <Shield className="h-5 w-5 text-white" />
-          </div>
+          <Image src="/logo.svg" alt="VialGuard" width={32} height={32} />
           <span className="font-bold text-xl text-gray-900">VialGuard</span>
         </Link>
 
@@ -103,7 +102,7 @@ function Header() {
           >
             Sign In
           </Link>
-          <Link href="/signup" className="btn btn-primary btn-sm">
+          <Link href="/signup" className="btn btn-secondary btn-sm">
             Start Free Trial
           </Link>
         </div>
@@ -114,11 +113,11 @@ function Header() {
 
 function HeroSection() {
   return (
-    <section className="bg-gradient-to-br from-teal-50 via-cyan-50 to-white py-8 sm:py-16 lg:py-20">
+    <section className="bg-gradient-to-br from-blue-50 via-indigo-50 to-white py-8 sm:py-16 lg:py-20">
       <div className="max-w-6xl mx-auto px-4">
         <div className="text-center max-w-4xl mx-auto">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-teal-100 text-teal-800 px-4 py-1.5 rounded-full text-sm font-medium mb-4 sm:mb-6">
+          <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-800 px-4 py-1.5 rounded-full text-sm font-medium mb-4 sm:mb-6">
             <Shield className="h-4 w-4" />
             Built specifically for injectable clinics
           </div>
@@ -126,7 +125,7 @@ function HeroSection() {
           {/* Headline */}
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight mb-4 sm:mb-6">
             Stop Losing Money on
-            <span className="text-primary block leading-tight">
+            <span className="text-secondary block leading-tight">
               Injectable Inventory
             </span>
           </h1>
@@ -379,8 +378,8 @@ function TrustStripSection() {
               key={index}
               className="flex items-center gap-3 text-gray-700"
             >
-              <div className="w-10 h-10 bg-teal-50 rounded-full flex items-center justify-center flex-shrink-0">
-                <point.icon className="h-5 w-5 text-teal-600" />
+              <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center flex-shrink-0">
+                <point.icon className="h-5 w-5 text-blue-700" />
               </div>
               <span className="text-sm font-medium">{point.text}</span>
             </div>
@@ -397,7 +396,7 @@ function ProtectionSystemsSection() {
     {
       title: "Audit & Compliance Protection",
       description: "Pass inspections with confidence",
-      color: "teal",
+      color: "blue",
       features: [
         {
           icon: FileText,
@@ -473,10 +472,10 @@ function ProtectionSystemsSection() {
   ];
 
   const colorClasses: Record<string, { bg: string; border: string; icon: string }> = {
-    teal: {
-      bg: "bg-teal-50",
-      border: "border-teal-200",
-      icon: "text-teal-600",
+    blue: {
+      bg: "bg-blue-50",
+      border: "border-blue-200",
+      icon: "text-blue-700",
     },
     amber: {
       bg: "bg-amber-50",
@@ -606,20 +605,20 @@ function BeforeAfterSection() {
           </div>
 
           {/* After */}
-          <div className="rounded-2xl border-2 border-teal-200 bg-gradient-to-br from-teal-50 to-cyan-50 p-8">
+          <div className="rounded-2xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-8">
             <h3 className="text-2xl font-bold mb-6 text-center text-gray-900">
               With VialGuardHQ
             </h3>
             <div className="space-y-4">
               {afterItems.map((item, index) => (
                 <div key={index} className="flex items-start gap-3">
-                  <CheckCircle2 className="h-5 w-5 text-teal-600 flex-shrink-0 mt-0.5" />
+                  <CheckCircle2 className="h-5 w-5 text-blue-700 flex-shrink-0 mt-0.5" />
                   <span className="text-gray-700">{item}</span>
                 </div>
               ))}
             </div>
-            <div className="mt-6 pt-6 border-t border-teal-200 text-center">
-              <p className="text-teal-700 font-semibold">
+            <div className="mt-6 pt-6 border-t border-blue-200 text-center">
+              <p className="text-blue-700 font-semibold">
                 Result: Protected inventory, peace of mind
               </p>
             </div>
@@ -680,7 +679,7 @@ function TestimonialsSection() {
                 </p>
                 <div className="flex items-center gap-3">
                   <div className="avatar placeholder">
-                    <div className="bg-teal-100 text-teal-800 rounded-full w-12">
+                    <div className="bg-blue-100 text-blue-800 rounded-full w-12">
                       <span className="text-lg">{testimonial.initials}</span>
                     </div>
                   </div>
@@ -788,8 +787,8 @@ function PricingSection() {
               <div className="text-center">
                 <div className="text-3xl font-bold text-gray-400">vs</div>
               </div>
-              <div className="text-center p-4 bg-teal-50 rounded-xl">
-                <div className="text-2xl font-bold text-teal-600">$199</div>
+              <div className="text-center p-4 bg-blue-50 rounded-xl">
+                <div className="text-2xl font-bold text-blue-700">$199</div>
                 <div className="text-sm text-gray-600">
                   VialGuardHQ monthly investment
                 </div>
@@ -809,7 +808,7 @@ function PricingSection() {
               key={index}
               className={`card h-full ${
                 plan.popular
-                  ? "shadow-2xl border-4 border-primary bg-gradient-to-br from-teal-50 to-cyan-50 transform md:scale-105"
+                  ? "shadow-2xl border-4 border-primary bg-gradient-to-br from-blue-50 to-indigo-50 transform md:scale-105"
                   : "bg-base-100 shadow-xl border-2 border-base-200"
               }`}
             >
@@ -856,11 +855,11 @@ function PricingSection() {
 
 function GuaranteeSection() {
   return (
-    <section className="py-16 lg:py-20 px-4 bg-gradient-to-br from-emerald-50 to-teal-50">
+    <section className="py-16 lg:py-20 px-4 bg-gradient-to-br from-blue-50 to-indigo-50">
       <div className="max-w-3xl mx-auto">
-        <div className="bg-white border-4 border-emerald-400 rounded-2xl shadow-2xl p-8 text-center">
-          <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Shield className="h-8 w-8 text-emerald-600" />
+        <div className="bg-white border-4 border-blue-400 rounded-2xl shadow-2xl p-8 text-center">
+          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Shield className="h-8 w-8 text-blue-700" />
           </div>
           <h2 className="text-3xl font-bold mb-4 text-gray-900">
             14-Day Risk-Free Trial
@@ -881,7 +880,7 @@ function GuaranteeSection() {
 
 function FinalCTASection() {
   return (
-    <section className="py-16 lg:py-20 px-4 bg-gradient-to-br from-teal-50 to-cyan-50">
+    <section className="py-16 lg:py-20 px-4 bg-gradient-to-br from-blue-50 to-indigo-50">
       <div className="max-w-4xl mx-auto text-center">
         <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
           Ready to Stop the Invisible Bleeding?
@@ -911,9 +910,7 @@ function Footer() {
     <footer className="footer footer-center p-10 bg-base-300 text-base-content">
       <aside>
         <div className="flex items-center gap-2 font-bold text-xl mb-2">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-            <Shield className="h-5 w-5 text-white" />
-          </div>
+          <Image src="/logo.svg" alt="VialGuard" width={32} height={32} />
           <span>VialGuard</span>
         </div>
         <p className="max-w-md">
