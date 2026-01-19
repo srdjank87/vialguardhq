@@ -328,7 +328,7 @@ function HowItWorksSection() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-12 md:gap-16">
           {steps.map((step, index) => (
             <div key={index} className="relative">
               <div className="bg-white rounded-2xl p-8 shadow-lg h-full">
@@ -341,8 +341,8 @@ function HowItWorksSection() {
                 <p className="text-gray-600">{step.description}</p>
               </div>
               {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2">
-                  <ChevronRight className="h-8 w-8 text-gray-300" />
+                <div className="hidden md:flex absolute top-1/2 -right-10 transform -translate-y-1/2 w-8 h-8 items-center justify-center">
+                  <ChevronRight className="h-6 w-6 text-gray-400" />
                 </div>
               )}
             </div>
