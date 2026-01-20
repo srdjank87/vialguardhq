@@ -20,6 +20,7 @@ import { AuditAction } from "@prisma/client";
 const actionLabels: Record<AuditAction, string> = {
   VIAL_RECEIVED: "Inventory Received",
   VIAL_OPENED: "Vial Opened",
+  VIAL_BUD_EXPIRED: "Vial BUD Expired",
   VIAL_DEPLETED: "Vial Depleted",
   VIAL_DISPOSED: "Vial Disposed",
   VIAL_QUARANTINED: "Vial Quarantined",
@@ -41,6 +42,7 @@ const actionLabels: Record<AuditAction, string> = {
 const actionIcons: Record<AuditAction, typeof Package> = {
   VIAL_RECEIVED: Package,
   VIAL_OPENED: Package,
+  VIAL_BUD_EXPIRED: AlertTriangle,
   VIAL_DEPLETED: Package,
   VIAL_DISPOSED: Package,
   VIAL_QUARANTINED: AlertTriangle,
@@ -62,6 +64,7 @@ const actionIcons: Record<AuditAction, typeof Package> = {
 const actionColors: Record<AuditAction, string> = {
   VIAL_RECEIVED: "bg-emerald-100 text-emerald-600",
   VIAL_OPENED: "bg-blue-100 text-blue-600",
+  VIAL_BUD_EXPIRED: "bg-orange-100 text-orange-600",
   VIAL_DEPLETED: "bg-gray-100 text-gray-600",
   VIAL_DISPOSED: "bg-gray-100 text-gray-600",
   VIAL_QUARANTINED: "bg-amber-100 text-amber-600",
