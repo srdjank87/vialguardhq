@@ -21,6 +21,7 @@ import {
   BadgeCheck,
   ShieldCheck,
   Stethoscope,
+  Printer,
 } from "lucide-react";
 
 export default function LandingPage() {
@@ -150,11 +151,11 @@ function HeroSection() {
             </span>
             <span className="flex items-center gap-1.5">
               <CheckCircle2 className="h-4 w-4 text-emerald-500 flex-shrink-0" />
-              Opened vial BUD alerts
+              BUD alerts
             </span>
             <span className="flex items-center gap-1.5">
               <CheckCircle2 className="h-4 w-4 text-emerald-500 flex-shrink-0" />
-              Audit-ready logs
+              Label printing
             </span>
           </div>
 
@@ -462,10 +463,10 @@ function ProtectionSystemsSection() {
             "Log usage in under 30 seconds. Designed for busy clinical workflows, not back-office data entry.",
         },
         {
-          icon: BarChart3,
-          title: "Usage Insights",
+          icon: Printer,
+          title: "Vial Label Printing",
           description:
-            "Understand your real product costs per treatment. Make data-driven purchasing decisions.",
+            "Print professional labels with product name, lot number, expiry, and BUD times. Keep vials organized and compliant.",
         },
       ],
     },
@@ -568,7 +569,7 @@ function BeforeAfterSection() {
   const afterItems = [
     "Real-time inventory visibility, always accurate",
     "Proactive expiry AND opened-vial BUD alerts",
-    "Clear chain of custody for every vial",
+    "Print professional labels for every vial",
     "Audit reports exported in seconds",
     "Track units/ml remaining per vial",
     "Quiet confidence that everything is tracked",

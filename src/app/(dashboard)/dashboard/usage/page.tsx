@@ -13,7 +13,7 @@ import {
   Clock,
   Package,
 } from "lucide-react";
-import { format } from "date-fns";
+import { PrintLabelButton } from "@/components/PrintLabelButton";
 
 interface Product {
   id: string;
@@ -21,13 +21,16 @@ interface Product {
   brand: string;
   unitType: string;
   unitsPerVial: number;
+  beyondUseHours?: number | null;
 }
 
 interface Vial {
   id: string;
   lotNumber: string;
   expirationDate: string;
-  unitsRemaining: number;
+  openedDate?: string | null;
+  initialQuantity: string;
+  remainingQuantity: string;
   product: Product;
   location?: { name: string } | null;
 }
@@ -102,8 +105,9 @@ export default function UsagePage() {
       return;
     }
 
-    if (quantityUsed > selectedVial.unitsRemaining) {
-      setError(`Only ${selectedVial.unitsRemaining} ${selectedVial.product.unitType.toLowerCase()} remaining in this vial`);
+    const remaining = parseFloat(selectedVial.remainingQuantity);
+    if (quantityUsed > remaining) {
+      setError(`Only ${remaining} ${selectedVial.product.unitType.toLowerCase()} remaining in this vial`);
       return;
     }
 
@@ -265,7 +269,7 @@ export default function UsagePage() {
                     </div>
                     <div className="mt-2 flex items-center gap-4 text-sm">
                       <span className="text-primary font-medium">
-                        {vial.unitsRemaining} {vial.product.unitType.toLowerCase()} left
+                        {vial.remainingQuantity} {vial.product.unitType.toLowerCase()} left
                       </span>
                       <span
                         className={`flex items-center gap-1 ${
@@ -329,7 +333,7 @@ export default function UsagePage() {
                 <input
                   type="number"
                   min="1"
-                  max={selectedVial?.unitsRemaining || 100}
+                  max={selectedVial ? parseFloat(selectedVial.remainingQuantity) : 100}
                   className="input input-bordered"
                   value={quantityUsed}
                   onChange={(e) => setQuantityUsed(parseInt(e.target.value) || 1)}
@@ -338,7 +342,7 @@ export default function UsagePage() {
                 {selectedVial && (
                   <label className="label">
                     <span className="label-text-alt text-gray-500">
-                      {selectedVial.unitsRemaining} {selectedVial.product.unitType.toLowerCase()} remaining
+                      {selectedVial.remainingQuantity} {selectedVial.product.unitType.toLowerCase()} remaining
                     </span>
                   </label>
                 )}
@@ -392,26 +396,44 @@ export default function UsagePage() {
                   </p>
                   <p className="text-sm text-gray-600">
                     {quantityUsed} {selectedVial.product.unitType.toLowerCase()} →{" "}
-                    {selectedVial.unitsRemaining - quantityUsed} {selectedVial.product.unitType.toLowerCase()} remaining after
+                    {parseFloat(selectedVial.remainingQuantity) - quantityUsed} {selectedVial.product.unitType.toLowerCase()} remaining after
                   </p>
                 </div>
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  disabled={isSaving || !selectedVial}
-                >
-                  {isSaving ? (
-                    <>
-                      <Loader2 className="h-5 w-5 animate-spin" />
-                      Saving...
-                    </>
-                  ) : (
-                    <>
-                      <Syringe className="h-5 w-5" />
-                      Log Usage
-                    </>
-                  )}
-                </button>
+                <div className="flex items-center gap-2">
+                  <PrintLabelButton
+                    vial={{
+                      id: selectedVial.id,
+                      productName: selectedVial.product.name,
+                      productBrand: selectedVial.product.brand,
+                      lotNumber: selectedVial.lotNumber,
+                      expirationDate: new Date(selectedVial.expirationDate),
+                      openedDate: selectedVial.openedDate ? new Date(selectedVial.openedDate) : null,
+                      beyondUseHours: selectedVial.product.beyondUseHours,
+                      remainingQuantity: selectedVial.remainingQuantity,
+                      initialQuantity: selectedVial.initialQuantity,
+                      unitType: selectedVial.product.unitType,
+                    }}
+                    size="md"
+                    variant="outline"
+                  />
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    disabled={isSaving || !selectedVial}
+                  >
+                    {isSaving ? (
+                      <>
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <Syringe className="h-5 w-5" />
+                        Log Usage
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
           </div>

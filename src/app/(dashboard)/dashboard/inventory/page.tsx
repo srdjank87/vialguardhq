@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { format, differenceInDays } from "date-fns";
 import { VialStatus } from "@prisma/client";
+import { PrintLabelButton } from "@/components/PrintLabelButton";
 
 async function getInventoryData(accountId: string, status?: string, search?: string) {
   const where: {
@@ -191,6 +192,7 @@ export default async function InventoryPage({
                     <th>Remaining</th>
                     <th>Expiration</th>
                     <th>Status</th>
+                    <th>Label</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -269,6 +271,22 @@ export default async function InventoryPage({
                           }`}>
                             {vial.status}
                           </span>
+                        </td>
+                        <td>
+                          <PrintLabelButton
+                            vial={{
+                              id: vial.id,
+                              productName: vial.product.name,
+                              productBrand: vial.product.brand,
+                              lotNumber: vial.lotNumber,
+                              expirationDate: vial.expirationDate,
+                              openedDate: vial.openedDate,
+                              beyondUseHours: vial.product.beyondUseHours,
+                              remainingQuantity: vial.remainingQuantity.toString(),
+                              initialQuantity: vial.initialQuantity.toString(),
+                              unitType: vial.product.unitType,
+                            }}
+                          />
                         </td>
                         <td>
                           <Link
