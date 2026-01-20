@@ -122,6 +122,9 @@ export async function POST(request: Request) {
       }
     }
 
+    // Check if this is the first usage (opening the vial)
+    const isFirstUsage = !vial.openedDate;
+
     // Create usage log and update vial in transaction
     const result = await prisma.$transaction(async (tx) => {
       // Create usage log
@@ -146,15 +149,36 @@ export async function POST(request: Request) {
       const newRemaining = remainingQuantity - validatedData.quantityUsed;
       const newStatus = newRemaining <= 0 ? VialStatus.DEPLETED : VialStatus.ACTIVE;
 
-      // Update vial
+      // Update vial - set openedDate if first usage
       await tx.vial.update({
         where: { id: validatedData.vialId },
         data: {
           remainingQuantity: new Decimal(Math.max(0, newRemaining)),
           status: newStatus,
           depletedDate: newRemaining <= 0 ? new Date() : undefined,
+          openedDate: isFirstUsage ? new Date() : undefined,
         },
       });
+
+      // Create audit log for vial opening if first usage
+      if (isFirstUsage) {
+        await tx.auditLog.create({
+          data: {
+            accountId: session.user.accountId,
+            userId: session.user.id,
+            action: AuditAction.VIAL_OPENED,
+            actorType: ActorType.USER,
+            entityType: "VIAL",
+            entityId: validatedData.vialId,
+            description: `Opened vial of ${vial.product.name} (Lot: ${vial.lotNumber})`,
+            metadata: {
+              productName: vial.product.name,
+              lotNumber: vial.lotNumber,
+              beyondUseHours: vial.product.beyondUseHours,
+            },
+          },
+        });
+      }
 
       // Create audit log
       await tx.auditLog.create({

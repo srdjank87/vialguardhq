@@ -125,18 +125,19 @@ enum LocationType {
 // ==================== PRODUCTS & INVENTORY ====================
 
 model Product {
-  id           String          @id @default(cuid())
-  name         String
-  brand        String
-  category     ProductCategory
-  unitType     UnitType
-  unitsPerVial Decimal
-  costPerVial  Decimal?
-  active       Boolean         @default(true)
-  accountId    String
-  account      Account         @relation(fields: [accountId], references: [id], onDelete: Cascade)
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @updatedAt
+  id             String          @id @default(cuid())
+  name           String
+  brand          String
+  category       ProductCategory
+  unitType       UnitType
+  unitsPerVial   Decimal
+  costPerVial    Decimal?
+  beyondUseHours Int?            // Hours after opening before vial must be discarded (BUD)
+  active         Boolean         @default(true)
+  accountId      String
+  account        Account         @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 
   vials Vial[]
 
@@ -275,6 +276,7 @@ enum DiscrepancyType {
   MISSING_VIAL
   UNEXPECTED_DEPLETION
   EXPIRY_VIOLATION
+  BUD_VIOLATION
   LOT_MISMATCH
   UNDOCUMENTED_USAGE
 }
@@ -320,6 +322,7 @@ model AuditLog {
 enum AuditAction {
   VIAL_RECEIVED
   VIAL_OPENED
+  VIAL_BUD_EXPIRED
   VIAL_DEPLETED
   VIAL_DISPOSED
   VIAL_QUARANTINED

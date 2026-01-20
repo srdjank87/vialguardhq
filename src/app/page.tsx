@@ -142,7 +142,7 @@ function HeroSection() {
           <div className="hidden sm:flex flex-wrap gap-3 sm:gap-6 justify-center text-sm text-gray-600 mb-8">
             <span className="flex items-center gap-1.5">
               <CheckCircle2 className="h-4 w-4 text-emerald-500 flex-shrink-0" />
-              Vial-level tracking
+              Unit & ml tracking
             </span>
             <span className="flex items-center gap-1.5">
               <CheckCircle2 className="h-4 w-4 text-emerald-500 flex-shrink-0" />
@@ -150,11 +150,11 @@ function HeroSection() {
             </span>
             <span className="flex items-center gap-1.5">
               <CheckCircle2 className="h-4 w-4 text-emerald-500 flex-shrink-0" />
-              Audit-ready logs
+              Opened vial BUD alerts
             </span>
             <span className="flex items-center gap-1.5">
               <CheckCircle2 className="h-4 w-4 text-emerald-500 flex-shrink-0" />
-              No EMR replacement
+              Audit-ready logs
             </span>
           </div>
 
@@ -419,15 +419,15 @@ function ProtectionSystemsSection() {
       features: [
         {
           icon: Bell,
-          title: "Expiry Alerts",
+          title: "Expiry & BUD Alerts",
           description:
-            "Automatic alerts at 30, 14, and 7 days before expiration. Use it or move it before it's too late.",
+            "Automatic alerts for expiration dates AND opened vial shelf life (Beyond Use Date). Know exactly when to use or discard.",
         },
         {
           icon: Package,
-          title: "Vial-Level Tracking",
+          title: "Unit & ML Tracking",
           description:
-            "Track every vial by product, lot number, and expiration. Know exactly what you have and where it is.",
+            "Track every vial by product, lot number, units/ml remaining, and expiration. Know exactly what you have and where it is.",
         },
       ],
     },
@@ -567,10 +567,10 @@ function BeforeAfterSection() {
 
   const afterItems = [
     "Real-time inventory visibility, always accurate",
-    "Proactive expiry alerts save product",
+    "Proactive expiry AND opened-vial BUD alerts",
     "Clear chain of custody for every vial",
     "Audit reports exported in seconds",
-    "Confident, data-backed reconciliation",
+    "Track units/ml remaining per vial",
     "Quiet confidence that everything is tracked",
   ];
 

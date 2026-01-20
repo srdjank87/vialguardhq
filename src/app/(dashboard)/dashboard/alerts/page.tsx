@@ -4,13 +4,13 @@ import {
   AlertTriangle,
   Clock,
   Package,
-  CheckCircle2,
   XCircle,
   ArrowRight,
   Shield,
+  Timer,
 } from "lucide-react";
 import Link from "next/link";
-import { differenceInDays, format } from "date-fns";
+import { differenceInDays, differenceInHours, format } from "date-fns";
 import { VialStatus, DiscrepancyStatus } from "@prisma/client";
 
 async function getAlertsData(accountId: string) {
@@ -19,7 +19,7 @@ async function getAlertsData(accountId: string) {
   const in14Days = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
   const in30Days = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
 
-  const [expiringVials, expiredVials, openDiscrepancies, lowStockProducts] =
+  const [expiringVials, expiredVials, openDiscrepancies, lowStockProducts, openedVials] =
     await Promise.all([
       // Vials expiring in next 30 days
       prisma.vial.findMany({
@@ -58,6 +58,19 @@ async function getAlertsData(accountId: string) {
           },
         },
       }),
+      // Opened vials with BUD tracking (vials that have been opened and have beyondUseHours set)
+      prisma.vial.findMany({
+        where: {
+          accountId,
+          status: VialStatus.ACTIVE,
+          openedDate: { not: null },
+          product: {
+            beyondUseHours: { not: null },
+          },
+        },
+        include: { product: true, location: true },
+        orderBy: { openedDate: "asc" },
+      }),
     ]);
 
   // Calculate low stock - default threshold of 2
@@ -65,11 +78,36 @@ async function getAlertsData(accountId: string) {
     (p) => p.vials.length < 2
   );
 
+  // Calculate BUD status for opened vials
+  const budAlerts = openedVials
+    .map((vial) => {
+      const openedDate = vial.openedDate!;
+      const beyondUseHours = vial.product.beyondUseHours!;
+      const budExpiry = new Date(openedDate.getTime() + beyondUseHours * 60 * 60 * 1000);
+      const hoursRemaining = differenceInHours(budExpiry, now);
+      const isExpired = hoursRemaining <= 0;
+      const isUrgent = hoursRemaining > 0 && hoursRemaining <= 4; // Less than 4 hours
+      const isWarning = hoursRemaining > 4 && hoursRemaining <= 12; // Less than 12 hours
+
+      return {
+        ...vial,
+        budExpiry,
+        hoursRemaining,
+        isExpired,
+        isUrgent,
+        isWarning,
+        needsAttention: isExpired || isUrgent || isWarning,
+      };
+    })
+    .filter((v) => v.needsAttention)
+    .sort((a, b) => a.hoursRemaining - b.hoursRemaining);
+
   return {
     expiringVials,
     expiredVials,
     openDiscrepancies,
     lowStock,
+    budAlerts,
     in7Days,
     in14Days,
   };
@@ -85,7 +123,8 @@ export default async function AlertsPage() {
     data.expiringVials.length === 0 &&
     data.expiredVials.length === 0 &&
     data.openDiscrepancies.length === 0 &&
-    data.lowStock.length === 0;
+    data.lowStock.length === 0 &&
+    data.budAlerts.length === 0;
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
@@ -164,6 +203,86 @@ export default async function AlertsPage() {
                 Manage Expired Inventory
                 <ArrowRight className="h-4 w-4" />
               </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* BUD Alerts - Opened Vials Approaching/Past Use-By Time */}
+      {data.budAlerts.length > 0 && (
+        <div className="card bg-orange-50 border-2 border-orange-200">
+          <div className="card-body">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                <Timer className="h-5 w-5 text-orange-600" />
+              </div>
+              <div>
+                <h2 className="font-bold text-orange-700">
+                  Beyond Use Date Alerts ({data.budAlerts.length})
+                </h2>
+                <p className="text-sm text-orange-600">
+                  Opened vials approaching or past their use-by time
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              {data.budAlerts.map((vial) => (
+                <div
+                  key={vial.id}
+                  className={`flex items-center justify-between p-3 bg-white rounded-lg border ${
+                    vial.isExpired
+                      ? "border-red-300"
+                      : vial.isUrgent
+                      ? "border-orange-300"
+                      : "border-yellow-300"
+                  }`}
+                >
+                  <div>
+                    <p className="font-medium text-gray-900">
+                      {vial.product.name}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      Lot: {vial.lotNumber} • {vial.location?.name || "No location"} •{" "}
+                      {vial.remainingQuantity.toString()} {vial.product.unitType.toLowerCase()} remaining
+                    </p>
+                    <p className="text-xs text-gray-400 mt-1">
+                      Opened: {format(vial.openedDate!, "MMM d, h:mm a")} •
+                      BUD: {vial.product.beyondUseHours}h after opening
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    {vial.isExpired ? (
+                      <>
+                        <p className="text-sm font-medium text-red-600">
+                          BUD EXPIRED
+                        </p>
+                        <p className="text-xs text-red-500">
+                          {Math.abs(vial.hoursRemaining)}h ago
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <p className={`text-sm font-medium ${
+                          vial.isUrgent ? "text-orange-600" : "text-yellow-600"
+                        }`}>
+                          {vial.hoursRemaining}h remaining
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          Use by {format(vial.budExpiry, "h:mm a")}
+                        </p>
+                      </>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-4 p-3 bg-orange-100 rounded-lg">
+              <p className="text-sm text-orange-700">
+                <strong>Beyond Use Date (BUD):</strong> Once opened, vials have a limited shelf life.
+                Use or discard these vials promptly to maintain compliance and patient safety.
+              </p>
             </div>
           </div>
         </div>
